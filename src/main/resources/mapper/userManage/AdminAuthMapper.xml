@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.topsroboteer.scheduling.administration.userManage.dao.AdminAuthMapper">
+    <resultMap id="adminAuth" type="com.cn.topsroboteer.scheduling.administration.userManage.model.AdminAuth">
+        <id column="id" property="id"/>
+        <result column="auth_name" property="authName"/>
+        <result column="level" property="level"/>
+        <result column="pid" property="pid"/>
+        <result column="createName" property="createName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="updateName" property="updateName"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="state" property="state"/>
+    </resultMap>
+    <select id="list" resultMap="adminAuth">
+        select c.*,d.user_name as updateName
+        from  ( select a.*,b.user_name as createName from admin_auth a join admin_user b on a.create_id = b.id) c
+        left join admin_user d on c.update_id = d.id
+        <where>
+            <if test="authName!=null and authName!=''">
+                auth_name=#{authName}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addAdminAuth" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.AdminAuth">
+        insert into admin_auth(id,auth_name,level,pid,create_id,create_time,update_id,update_time,state)
+        values (#{id},#{authName},#{level},#{pid},#{createId},#{createTime},#{updateId},#{updateTime},#{state})
+    </insert>
+
+    <update id="upAdminAuth" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.AdminAuth">
+        update admin_auth
+        <set>
+            <if test="authName !=null and authName !=''">
+                auth_name=#{authName},
+            </if>
+            <if test="level !=null and level !=''">
+                level=#{level},
+            </if>
+            <if test="pid !=null and pid !=''">
+                pid=#{pid},
+            </if>
+            <if test="createId !=null and createId !=''">
+                create_id=#{createId},
+            </if>
+            <if test="createTime !=null">
+                create_time=#{createTime},
+            </if>
+            <if test="updateId !=null and updateId !=''">
+                update_id=#{updateId},
+            </if>
+                update_time=#{updateTime},
+            <if test="state !=null and state1=''">
+                state=#{state}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delAdminAuth" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.AdminAuth">
+        delete from admin_auth
+        where id=#{id}
+    </delete>
+
+    <select id="selectPidByAdminAuth" resultType="com.cn.topsroboteer.scheduling.administration.userManage.model.AdminAuths">
+
+        select * from admin_auth where pid = #{id}
+
+    </select>
+</mapper>

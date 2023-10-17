@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.topsroboteer.scheduling.administration.userManage.dao.PostMapper">
+    <resultMap id="post" type="com.cn.topsroboteer.scheduling.administration.userManage.model.Post">
+        <id column="post_id" property="postId"/>
+        <result column="post_name" property="postName"/>
+        <result column="sort" property="sort"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <select id="list" resultMap="post">
+        select post_id,post_name,sort,create_time,update_time,is_del
+        from post
+    </select>
+
+    <insert id="addPost" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Post">
+        insert into post(post_id,post_name,sort,create_time,update_time,is_del)
+        values (#{postId},#{postName},#{sort},#{createTime},#{updateTime},#{isDel})
+    </insert>
+
+    <update id="upPost" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Post">
+        update post
+        <set>
+            <if test="postName !=null and postName !=''">
+                post_name=#{postName},
+            </if>
+            <if test="sort !=null and sort !=''">
+                sort=#{sort},
+            </if>
+            <if test="createTime !=null ">
+                create_time=#{createTime},
+            </if>
+            <if test="updateTime !=null ">
+                update_time=#{updateTime},
+            </if>
+
+            <if test="isDel !=null and isDel !=''">
+                is_del=#{isDel}
+            </if>
+        </set>
+        where post_id=#{postId}
+    </update>
+
+    <delete id="delPost" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Post">
+        delete from post
+        where post_id=#{postId}
+    </delete>
+</mapper>

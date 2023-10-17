@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.topsroboteer.scheduling.administration.userManage.dao.DailyMapper">
+    <resultMap id="daily" type="com.cn.topsroboteer.scheduling.administration.userManage.model.Daily">
+        <id column="id" property="id"/>
+        <result column="date_type" property="dateType"/>
+        <result column="daily_date" property="dailyDate"/>
+        <result column="content" property="content"/>
+        <result column="duration" property="duration"/>
+        <result column="work_type" property="workType"/>
+        <result column="project_id" property="projectId"/>
+        <result column="task_id" property="taskId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="task_name" property="taskName"/>
+        <result column="user_name" property="userName"/>
+    </resultMap>
+
+    <select id="list" resultMap="daily">
+        select a.id,a.date_type,a.daily_date daily_date ,a.content content ,a.duration duration,a.work_type work_type,
+               b.id as project_id,b.project_name project_name,c.id as task_id,c.task_name task_name,d.user_name user_name
+        from daily a
+        left join project b on a.project_id=b.id
+        left join task c on a.task_id=c.id
+        left join admin_user d on a.user_id=d.id
+        <where>
+            <if test="startDate !=null">
+               and  a.start_date &gt;= #{startDate}
+            </if>
+            <if test="endDate !=null">
+               and  a.end_date &lt;= #{endDate}
+            </if>
+            <if test="userId !=null and userId !=''">
+               and a.user_id=#{userId}
+            </if>
+        </where>
+    </select>
+<!--id
+date_type
+daily_date
+content
+duration
+work_type
+project_id
+project_name
+task_id
+task_name
+start_date
+end_date
+user_id
+user_name-->
+    <insert id="add" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Daily">
+        insert into daily(id,date_type,daily_date,content,duration,work_type,project_id,project_name,
+                          task_id,task_name,user_id,user_name)
+        values (#{id},#{dateType},#{dailyDate},#{content},#{duration},#{workType},#{projectId},
+                #{projectName},#{taskId},#{taskName},#{userId},#{userName})
+    </insert>
+
+    <update id="update" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Daily">
+        update daily
+        <set>
+            <if test="dateType !=null and dateType !=''">
+                date_type=#{dateType},
+            </if>
+            <if test="dailyDate !=null">
+                daily_date =#{dailyDate},
+            </if>
+            <if test="content!=null and content !=''">
+                content=#{content},
+            </if>
+            <if test="duration !=null and duration!=''">
+                duration=#{duration},
+            </if>
+            <if test="workType !=null and workType !=''">
+                work_type=#{workType},
+            </if>
+            <if test="projectId!=null and projectId!=''">
+                project_id=#{projectId},
+            </if>
+            <if test="taskId!=null and taskId!=''">
+                task_id=#{taskId}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Daily">
+        delete from daily
+        where id=#{id}
+    </delete>
+</mapper>

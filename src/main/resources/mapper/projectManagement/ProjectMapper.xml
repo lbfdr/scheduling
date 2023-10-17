@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.topsroboteer.scheduling.administration.projectManagement.dao.ProjectMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cn.topsroboteer.scheduling.administration.projectManagement.model.Project">
+        <id column="id" property="id"/>
+        <result column="project_name" property="projectName"/>
+        <result column="project_task" property="projectTask"/>
+        <result column="priority" property="priority"/>
+        <result column="start_up_time" property="startUpTime"/>
+        <result column="completion_time" property="completionTime"/>
+        <result column="day_of_alone" property="dayOfAlone"/>
+        <!--        <result column="day_of_two" property="dayOfTwo" />-->
+        <!--        <result column="day_of_three" property="dayOfThree" />-->
+        <!--        <result column="day_of_four" property="dayOfFour" />-->
+        <result column="admin_user_id" property="adminUserId"/>
+        <result column="level" property="level"/>
+        <result column="is_parallel" property="isParallel"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , project_name, project_task, priority, start_up_time, completion_time, day_of_alone, day_of_two, day_of_three, day_of_four, admin_user_id, level, is_parallel
+    </sql>
+    <select id="selectProjectsDesc" resultType="com.cn.topsroboteer.scheduling.administration.projectManagement.model.Project"
+            parameterType="com.cn.topsroboteer.scheduling.administration.projectManagement.model.Project">
+        select p.id,
+               project_name,
+               project_task,
+               priority,
+               start_up_time,
+               completion_time,
+               day_of_alone,
+               day_of_two,
+               day_of_three,
+               day_of_four,
+               gm.id adminUserId,
+               member_name adminUserName,
+               level,
+               is_parallel
+        from project p
+                 left join group_member gm on p.admin_user_id = gm.id
+        <where>
+            <if test="projectName!=null and projectName!=''">
+                project_name like concat('%',#{projectName},'%')
+            </if>
+        </where>
+            order by completion_time desc
+    </select>
+    <select id="selectProjectsAsc" resultType="com.cn.topsroboteer.scheduling.administration.projectManagement.model.Project"
+            parameterType="com.cn.topsroboteer.scheduling.administration.projectManagement.model.Project">
+        select p.id,
+        project_name,
+        project_task,
+        priority,
+        start_up_time,
+        completion_time,
+        day_of_alone,
+        day_of_two,
+        day_of_three,
+        day_of_four,
+        gm.id adminUserId,
+        member_name adminUserName,
+        level,
+        is_parallel
+        from project p
+        left join group_member gm on p.admin_user_id = gm.id
+        <where>
+            <if test="projectName!=null and projectName!=''">
+                project_name like concat('%',#{projectName},'%')
+            </if>
+        </where>
+        order by completion_time asc
+    </select>
+</mapper>

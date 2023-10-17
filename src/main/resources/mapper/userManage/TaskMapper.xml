@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.topsroboteer.scheduling.administration.userManage.dao.TaskMapper">
+    <resultMap id="task" type="com.cn.topsroboteer.scheduling.administration.userManage.model.Task">
+        <id column="id" property="id"/>
+        <result column="task_name" property="taskName"/>
+        <result column="task_describe" property="taskDescribe"/>
+        <result column="project_name" property="projectName"/>
+        <result column="classification" property="classification"/>
+        <result column="details" property="details"/>
+        <result column="state" property="state"/>
+        <result column="state_remarks" property="stateRemarks"/>
+        <result column="propose_name" property="proposeName"/>
+        <result column="expected_date" property="expectedDate"/>
+        <result column="remarks" property="remarks"/>
+        <result column="department_name" property="departmentName"/>
+        <result column="assign_state" property="assignState"/>
+        <result column="assign_name" property="assignName"/>
+        <result column="handler_name" property="handlerName"/>
+        <result column="estimate_date" property="estimateDate"/>
+        <result column="create_time" property="createTime"/>
+        <result column="confirmation_date" property="confirmationDate"/>
+        <result column="processing_time" property="processingTime"/>
+        <result column="completion_time" property="completionTime"/>
+    </resultMap>
+
+    <select id="list" resultMap="task">
+        select d.*,
+        f.user_name as handlerName ,
+        j.project_name as projectName,
+        h.department_name as departmentName
+        from
+        (select c.*,b.user_name as assignName from
+        (select a.*,e.user_name as proposeName from task a join admin_user e on a.propose_id = e.id
+        <where>
+            <if test="taskName !=null and taskName !=''">
+                and a.task_name =#{taskName}
+            </if>
+            <if test="taskDescribe !=null and taskDescribe !=''">
+                and a.task_describe=#{taskDescribe}
+            </if>
+            <if test="state !=null and state !=''">
+                and a.state =#{state}
+            </if>
+            <if test="createTime !=null and createTime !=''">
+                and a.create_time=#{createTime}
+            </if>
+            <if test="confirmationDate !=null and confirmationDate !=''">
+                and a.confirmation_date = #{confirmationDate}
+            </if>
+            <if test="processingTime !=null and processingTime!=''">
+                and a.processing_time=#{processingTime}
+            </if>
+            <if test="completionTime !=null and completionTime !=''">
+                and a.completion_time=#{completionTime}
+            </if>
+            <if test="proposeId !=null and proposeId != ''">
+                and a.propose_id=#{proposeid}
+            </if>
+        </where>
+        ) c join admin_user b on c.assign_id = b.id ) d
+        left join admin_user f on d.handler_id=f.id
+        left join project j on d.project_id=j.id
+        left join department h on d.department_id=h.id
+        <where>
+            <if test="handlerId !=null and handlerId != ''">
+                d.handler_id=#{handlerId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addTask" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Task">
+        insert into task(id, task_name, task_describe, project_id, classification, details, state, state_remarks,
+                         propose_id,
+                         expected_date, remarks, department_id, assign_state, assign_id, handler_id, estimate_date,
+                         create_time, confirmation_date, processing_time, completion_time)
+        values (#{id}, #{taskName}, #{taskDescribe}, #{projectId}, #{classification}, #{details}, #{state},
+                #{stateRemarks}, #{proposeId}, #{expectedDate},
+                #{remarks}, #{departmentId}, #{assignState}, #{assignId}, #{handlerId}, #{estimateDate}, #{createTime},
+                #{confirmationDate}, #{processingTime}, #{completionTime})
+    </insert>
+
+    <update id="upTask" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Task">
+        update task
+        <set>
+
+            <if test="taskName !=null and taskName!=''">
+                task_name=#{taskName},
+            </if>
+            <if test="taskDescribe !=null and taskDescribe !=''">
+                task_describe=#{taskDescribe},
+            </if>
+            <if test="projectId !=null and projectId !=''">
+                project_id=#{projectId},
+            </if>
+            <if test="classification !=null and classification !=''">
+                classification=#{classification},
+            </if>
+            <if test="details !=null and details !=''">
+                details=#{details},
+            </if>
+            <if test="state !=null and state !=''">
+                state=#{state},
+            </if>
+            <if test="stateRemarks !=null and stateRemarks !=''">
+                state_remarks=#{stateRemarks},
+            </if>
+            <if test="proposeId !=null and proposeId !=''">
+                propose_id=#{proposeId},
+            </if>
+            <if test="expectedDate!=null">
+                expected_date=#{expectedDate},
+            </if>
+
+            <if test="remarks !=null and remarks !=''">
+                remarks=#{remarks},
+            </if>
+            <if test="departmentId !=null and departmentId!=''">
+                department_id=#{departmentId},
+            </if>
+            <if test="assignState !=null and assignState !=''">
+                assign_state=#{assignState},
+            </if>
+            <if test="assignId !=null and assignId!=''">
+                assign_id=#{assignId},
+            </if>
+            <if test="handlerId !=null and handlerId !=''">
+                handler_id=#{handlerId},
+            </if>
+            <if test="estimateDate !=null ">
+                estimate_date=#{estimateDate},
+            </if>
+
+            <if test="estimateDate !=null ">
+                create_time=#{createTime},
+            </if>
+
+
+            <if test="confirmationDate !=null ">
+                confirmation_date=#{confirmationDate},
+            </if>
+
+            <if test="processingTime !=null ">
+                processing_time=#{processingTime},
+            </if>
+
+            <if test="completionTime !=null ">
+                completion_time=#{completionTime}
+            </if>
+
+
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delTask" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Task">
+        delete
+        from task
+        where id = #{id}
+    </delete>
+</mapper>

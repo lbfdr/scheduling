@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.topsroboteer.scheduling.administration.userManage.dao.GroupMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cn.topsroboteer.scheduling.administration.userManage.model.Group">
+        <id column="id" property="id"/>
+        <result column="group_name" property="groupName"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="group_leader" property="groupLeader"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , group_name, department_id, group_leader
+    </sql>
+    <select id="selectGroups" resultType="com.cn.topsroboteer.scheduling.administration.userManage.model.Group">
+        SELECT g.id,
+        `group_name`,
+        g.department_id,
+        department_name departmentName,
+        group_leader,
+        member_name groupLeaderName
+        FROM `tbl_group` g
+        LEFT JOIN department d
+        on g.department_id = d.id
+        LEFT JOIN `group_member` gm on gm.id = g.group_leader
+        <where>
+            <if test="id !=null and id!=''">
+                and g.id = #{id}
+            </if>
+            <if test="groupName !=null and groupName!=''">
+                <!--select * from t_user where username like concat('%',#{mohu},'%')-->
+                and `group_name` like concat('%',#{groupName},'%')
+                <!--and `group_name` like "%"#{groupName}"%"-->
+            </if>
+        </where>
+    </select>
+    <!-- <select id="selectGroups" resultType="com.springboot.demo2.entity.Group">
+         SELECT DISTINCT `tbl_group`.id,
+                         `tbl_group`.group_name groupName,
+                         d.department_name  departmentName,
+                         d.id               departmentId,
+                         temp.leader_name groupLeaderName,
+                         temp.member_name   groupMemberName
+         FROM `tbl_group`
+                  INNER JOIN
+              (SELECT g1.member_name leader_name, g2.member_name, g1.group_id
+               FROM group_member g1,
+                    group_member g2
+               WHERE g1.id = g2.group_leader) temp ON `tbl_group`.id = temp.`group_id`
+                  INNER JOIN department d ON `tbl_group`.department_id = d.id
+         <where>
+             <if test="id !=null and id!=''">
+                tbl_group.id = #{id}
+             </if>
+         </where>
+             limit #{pageNum},#{pageSize}
+     </select>-->
+    <!--<select id="selectGroups" resultType="com.springboot.demo2.entity.Group">
+        SELECT DISTINCT `tbl_group`.id,
+        `tbl_group`.group_name groupName,
+        d.department_name  departmentName,
+        d.id               departmentId,
+        `tbl_group`.group_leader groupLeader,
+        temp.leader_name groupLeaderName
+        FROM `tbl_group`
+        INNER JOIN
+        (SELECT g1.member_name leader_name, g2.member_name, g1.group_id
+        FROM group_member g1,
+        group_member g2
+        WHERE g1.id = g2.group_leader) temp ON `tbl_group`.id = temp.`group_id`
+        INNER JOIN department d ON `tbl_group`.department_id = d.id
+        <where>
+            <if test="id !=null and id!=''">
+                tbl_group.id = #{id}
+            </if>
+        </where>
+
+    </select>-->
+</mapper>

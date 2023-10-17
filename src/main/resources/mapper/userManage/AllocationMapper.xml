@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.topsroboteer.scheduling.administration.userManage.dao.AllocationMapper">
+    <resultMap id="allocation" type="com.cn.topsroboteer.scheduling.administration.userManage.model.Allocation">
+        <id column="id" property="id"/>
+        <result column="task_name" property="taskName"/>
+        <result column="handler_id" property="handlerId"/>
+        <result column="handler_name" property="handlerName"/>
+        <result column="estimate_date" property="estimateDate"/>
+    </resultMap>
+    <select id="list" resultMap="allocation">
+        select a.id ,b.task_name task_name,a.handler_name handlerName,a.estimate_date estimate_date,a.handler_id,b.id taskId
+        from allocation_ref a
+        left join task b on a.task_id=b.id
+        <where>
+            <if test="taskId !=null and taskId !=''">
+                a.task_id=#{taskId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addAllocation" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Allocation">
+        insert into allocation_ref(id,task_id,handler_id,handler_name,estimate_date)
+        values (#{id},#{taskId},#{handlerId},#{handlerName},#{estimateDate})
+    </insert>
+
+    <update id="upAllocation" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Allocation">
+        update  allocation_ref
+        <set>
+
+            <if test="taskId !=null and taskId !=''">
+                task_id=#{taskId},
+            </if>
+            <if test="handlerId !=null and handlerId !=''">
+                handler_name=#{handlerId},
+            </if>
+            <if test="handlerName !=null and handlerName !=''">
+                handler_name=#{handlerName},
+            </if>
+            <if test="estimateDate!=null and estimateDate!=''">
+                estimate_date=#{estimateDate}
+            </if>
+
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delAllocation" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.Allocation">
+        delete from allocation_ref
+        where id=#{id}
+    </delete>
+</mapper>

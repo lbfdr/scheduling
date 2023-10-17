@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.topsroboteer.scheduling.administration.userManage.dao.AuthRoleRefMapper">
+    <resultMap id="ref" type="com.cn.topsroboteer.scheduling.administration.userManage.model.AuthRoleRef">
+        <id column="id" property="id"/>
+        <result column="menu_id" property="menuId"/>
+        <result column="user_role_id" property="userRoleId"/>
+        <result column="createName" property="createName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="updateName" property="updateName"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    <select id="list" resultMap="ref">
+        select c.*,d.user_name as updateName
+        from  ( select a.*,b.user_name as createName from auth_role_ref a join admin_user b on a.create_id = b.id) c
+        left join admin_user d on c.update_id = d.id
+        where  menu_id=#{menuId} and user_role_id=#{userRoleId}
+    </select>
+    <insert id="addAuthRoleRef" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.AuthRoleRef">
+        insert into auth_role_ref(id,menu_id,user_role_id,create_id,create_time,update_id,update_time)
+        values (#{id},#{menuId},#{userRoleId},#{createId},#{createTime},#{updateId},#{updateTime})
+    </insert>
+    <delete id="delAuthRoleRef" parameterType="com.cn.topsroboteer.scheduling.administration.userManage.model.AuthRoleRef">
+        delete from auth_role_ref
+        where menu_id=#{menuId} and user_role_id=#{userRoleId}
+    </delete>
+
+    <select id="selectRolesAuth" resultType="com.cn.topsroboteer.scheduling.administration.userManage.model.AdminAuths">
+
+        select aa.id, aa.auth_name,aa.pid
+        from auth_role_ref arr
+        left join admin_auth aa on arr.menu_id = aa.id
+        where arr.user_role_id = #{rolesId}
+
+    </select>
+</mapper>

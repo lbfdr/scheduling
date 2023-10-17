@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.topsroboteer.scheduling.administration.projectManagement.dao.TaskAllocationMapper">
+    <resultMap id="BaseResultMap" type="com.cn.topsroboteer.scheduling.administration.projectManagement.model.TaskAllocation">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="project_name" property="projectName" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="project_task" property="projectTask" jdbcType="VARCHAR"/>
+        <result column="time_node_start" property="timeNodeStart" jdbcType="VARCHAR"/>
+        <result column="deadline" property="deadline" jdbcType="VARCHAR"/>
+        <result column="if_complete" property="ifComplete" jdbcType="VARCHAR"/>
+        <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+        <result column="priority" property="priority" jdbcType="VARCHAR"/>
+        <result column="days" property="days" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="columns">
+        id,project_name,user_name,create_time,update_time,time_node_start,deadline,
+            project_task,if_complete,remarks,priority,days
+    </sql>
+
+
+    <select id="list" resultType="com.cn.topsroboteer.scheduling.administration.projectManagement.model.TaskAllocation">
+        select    id,project_name,user_name,create_time,update_time,time_node_start,deadline,
+        project_task,if_complete,remarks,priority,days
+        from task_allocation
+        <where>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="projectName != null and projectName != ''">
+                and project_name = #{projectName}
+            </if>
+            <if test="priority != null and priority != ''">
+                and priority = #{priority}
+            </if>
+        </where>
+        order by deadline DESC,create_time ASC
+    </select>
+
+    <insert id="insertSelective" parameterType="com.cn.topsroboteer.scheduling.administration.projectManagement.model.TaskAllocation">
+        insert into task_allocation
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null and id != ''">
+                id,
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name,
+            </if>
+            <if test="projectName != null and projectName != ''">
+                project_name,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null ">
+                update_time,
+            </if>
+            <if test="projectTask != null ">
+                project_task,
+            </if>
+
+            <if test="timeNodeStart != null and timeNodeStart!='' ">
+                time_node_start,
+            </if>
+            <if test="deadline != null and deadline!=''">
+                deadline,
+            </if>
+            <if test="ifComplete != null and ifComplete != '' ">
+                if_complete,
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks,
+            </if>
+            <if test="priority != null and priority != ''">
+                priority,
+            </if>
+            <if test="days != null and days != ''">
+                days,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null and id != ''">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null and userName != ''">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                #{projectName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null ">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="projectTask != null ">
+                #{projectTask,jdbcType=VARCHAR},
+            </if>
+
+            <if test="timeNodeStart != null and timeNodeStart!=''">
+                #{timeNodeStart,jdbcType=VARCHAR},
+            </if>
+            <if test="deadline != null and deadline!=''">
+                #{deadline,jdbcType=VARCHAR},
+            </if>
+            <if test="ifComplete != null and ifComplete != ''">
+                #{ifComplete,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="priority != null and priority != ''">
+                #{priority,jdbcType=VARCHAR},
+            </if>
+            <if test="days != null and days != ''">
+                #{days,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateSelective" parameterType="com.cn.topsroboteer.scheduling.administration.projectManagement.model.TaskAllocation">
+        update task_allocation
+        <set >
+            <if test="userName != null" >
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="projectName != null" >
+                project_name = #{projectName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="projectTask != null" >
+                project_task = #{projectTask,jdbcType=VARCHAR},
+            </if>
+            <if test="deadline != null" >
+                deadline = #{deadline,jdbcType=VARCHAR},
+            </if>
+            <if test="timeNodeStart != null" >
+                time_node_start = #{timeNodeStart,jdbcType=VARCHAR},
+            </if>
+            <if test="ifComplete != null" >
+                if_complete = #{ifComplete,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null" >
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="priority != null" >
+                priority = #{priority,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="delete">
+        delete from task_allocation
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <!--List<TaskAllocation> sortList(TaskAllocation taskAllocation);-->
+    <select id="sortList" resultType="com.cn.topsroboteer.scheduling.administration.projectManagement.model.TaskAllocation">
+        select <include refid="columns"/>
+        from task_allocation order by deadline DESC
+    </select>
+    <!--List<TaskAllocation> sortListAsc();-->
+    <select id="sortListAsc" resultType="com.cn.topsroboteer.scheduling.administration.projectManagement.model.TaskAllocation">
+        select <include refid="columns"/>
+        from task_allocation order by deadline
+    </select>
+</mapper>
